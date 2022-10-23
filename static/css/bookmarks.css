@@ -1,0 +1,112 @@
+#main-section {
+  margin-top: 3.7rem;
+  width: 100%;
+}
+
+#actionAlert {
+  position: fixed;
+  bottom: 0;
+  margin-left: 10%;
+  width: 80%;
+}
+
+#actionAlert button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.bookmark {
+  position: relative;
+}
+
+.remove-bookmark {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+@media screen and (min-width: 992px) {
+  #main-section {
+    padding-left: calc(174px + 1rem);
+  }
+
+  #actionAlert {
+    width: 45%;
+    min-width: 600px;
+    margin-left: calc(174px + 1rem + 8%);
+  }
+
+  #main-section > * {
+    width: 75%;
+    min-width: 750px;
+  }
+
+  #menu {
+    width: 15%;
+    min-width: 190px;
+    position: fixed;
+    top: 3.2rem;
+    left: 0;
+  }
+}
+
+@media screen and (min-width: 1270px) {
+  #main-section {
+    padding-left: 15%;
+  }
+}
+
+.quiz-link {
+  color: black;
+}
+
+.quiz-link:hover {
+  color: black;
+  text-decoration: none;
+}
+
+.like-quiz-btn, .dislike-quiz-btn{
+  display: inline-block;
+  margin: 0 5px 0 0;
+  padding: 0;
+  color: rgb(150, 150, 150);
+}
+
+.liked-quiz, .disliked-quiz, .bookmarked-quiz{
+  color: rgb(123, 104, 238)!important;
+}
+
+.removing {
+  position: relative;
+}
+
+.removing-bookmark-loader {
+  display: none;
+}
+
+.removing .removing-bookmark-loader {
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+}
+
+.removing .spinner-border {
+  height: 1.2rem;
+  width: 1.2rem;
+  border-width: 0.15em;
+}
+
+.removing .removing-cover {
+  display: block !important;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.fw-bold {
+  font-weight: 500;
+}

@@ -1,0 +1,83 @@
+body {
+	background-color: rgb(247, 247, 247);
+}
+
+.material-icons-outlined, .material-icons-round, .material-icons{
+  background-color: transparent;
+  border: none;
+  color: inherit;
+}
+
+.transparent-btn {
+  color: rgb(123, 104, 238);
+  background-color: rgba(123, 104, 238, 0.2);
+  border: 1px solid rgb(123, 104, 238);
+  border-radius: 5px;
+  padding: 0.35rem 0.75rem;
+  text-decoration: none;
+}
+
+.deep-btn {
+	color: white;
+	background-color: rgb(123, 104, 238);
+	border: none;
+	border-radius: 3px;
+	padding: 0.35rem 1rem;
+}
+
+.alert {
+	font-size: 0.9rem;
+	position: relative;
+}
+
+.alert .btn-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+
+@media screen and (min-width: 650px) {
+	form {
+		width: 45%;
+		min-width: 600px;
+		padding: 15px;
+		border-radius: 10px;
+		box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+		margin: 0 auto;
+	}
+}
+
+@media screen and (max-width: 649px) {
+	form {
+		width: 100%;
+		min-width: unset;
+		padding: 15px;
+		border-radius: 0;
+		margin: 0;
+	}
+
+	body {
+		background-color: white;
+	}
+}
+
+input {
+	display: block;
+	width: 100%;
+	outline: rgb(230, 230, 230) solid 1px;
+	background-color: rgb(250, 250, 250);
+	border: none;
+}
+
+input:focus {
+	outline: rgb(123, 104, 238) solid 2px;
+}
+
+.input-error {
+	outline: rgb(235, 0, 0) solid 2px;
+}
+
+.rounded-1 {
+  border-radius: 3px;
+}

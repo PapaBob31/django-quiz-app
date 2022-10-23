@@ -1,0 +1,15 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="">
+	<title>activate account</title>
+</head>
+<body>
+	<h2>Activate your account</h2>
+	<p>Just one more step to get you started</p>
+	<p>Pls click on the link below to confirm your registration.</p>
+	<a href="http://{{domain}}{% url 'activate' uidb64=uid token=token %}">Activate</a>
+</html>

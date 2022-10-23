@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bookmarks.css' %}">
+	<script type="text/javascript" src="{% static 'javascript/bookmarks.js' %}" defer></script>
+	<title>Bookmarks</title>
+{% endblock head_tags %}
+
+{% block menu_content %}
+	<a href="{% url 'home' %}" class="d-block p-3">Home</a>
+	{% if user.has_activated_account %}
+		<a href="{% url 'create_quiz' %}" class="d-block p-3">Create Quiz</a>
+		<a href="{% url 'user_bookmarks' user.username %}" class="d-block p-3" id="current-page">Bookmarks</a>
+	{% else %}
+		<a href="" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Create Quiz</a>
+		<a href="#" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Bookmarks</a>
+	{% endif %}
+	<a href="#" class="d-block p-3">Categories</a>
+	<a href="#" class="d-block p-3">Notifications</a>
+	<a href="#" class="d-block p-3">Recently played</a>
+	<a href="#" class="d-block p-3">Recommended</a>
+{% endblock menu_content %}
+
+{% block maincontent %}
+	<main id="main-section">
+		{% csrf_token %}
+		<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2 mt-3">
+			<h5>Bookmarks</h5>
+		</article>
+		{% for quiz in user.bookmarks.all %}
+			<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2 bookmark">
+				<a href="{% url 'userprofile' quiz.author.email %}" class="text-dark fw-bold">{{ quiz.author.username }}</a>
+				<h5><a href="{% url 'quiz' quiz.slug_id %}" class="quiz-link">{{ quiz.quiz_title }}</a></h5>
+				<div class='removing-bookmark-loader'>
+					<span class='spinner-border'></span> removing bookmark...
+				</div>
+				<p>{{ quiz.description }}</p>
+				<button data-href="{% url 'remove_bookmark' quiz_id=quiz.slug_id %}" class="remove-bookmark material-icons p-1">delete_forever</button>
+				<div class="d-inline-flex align-items-center">
+					{% if quiz in user.liked_posts.all %}
+						<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='material-icons like-quiz-btn liked-quiz'>thumb_up_alt</button>
+					{% else %}
+						<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='like-quiz-btn material-icons'>thumb_up_alt</button>
+					{% endif %}
+					<span class="like-count mr-3">{{ quiz.likes.count }}</span>
+					{% if quiz in user.disliked_posts.all %}
+						<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn disliked-quiz material-icons'>thumb_down_alt</button>
+					{% else %}
+						<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn material-icons'>thumb_down_alt</button>	
+					{% endif %}
+					<span class="dislike-count">{{ quiz.dislikes.count }}</span>
+				</div>
+				<div class='removing-cover'></div>
+			</article>
+		{% empty %}
+			<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2">
+				<p>You haven't bookmarked any quiz yet</p>
+			</article>
+		{% endfor %}
+	</main>
+	<div class="alert alert-dismissible fade" id="actionAlert" role="alert">
+		<span></span>
+		<button class="material-icons-round">close</button>
+	</div>
+{% endblock maincontent %}

@@ -1,0 +1,41 @@
+body {
+	font-family: 'Segoe UI', sans-serif;
+	background-color: rgb(247, 247, 247);
+	padding: 0px;
+	margin: 0px;
+}
+
+header {
+	background-color: white;
+	box-shadow: 0px 5px 3px rgb(227, 227, 227);
+	padding: 0.5rem;
+}
+
+h1 {
+	font-size: 3rem;
+	margin: 0.5rem;
+}
+
+h2 {
+	margin: 0;
+}
+
+main {
+	text-align: center;
+	margin-top: 3rem;
+	padding: 1rem;
+}
+
+.text-grey {
+	color: rgb(180, 180, 180);
+	font-weight: bold;
+}
+
+.deep-btn {
+	color: white;
+	background-color: rgb(123, 104, 238);
+	border: none;
+	border-radius: 3px;
+	padding: 0.35rem 1rem;
+	text-decoration: none;
+}

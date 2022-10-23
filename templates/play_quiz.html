@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/play.css' %}">
+	<script type="text/javascript" src="{% static 'javascript/play.js' %}" defer></script>
+	<title>play quiz</title>
+{% endblock head_tags %}
+
+{% block menu_content %}
+	<a href="{% url 'home' %}" class="d-block p-3">Home</a>
+	{% if user.has_activated_account %}
+		<a href="{% url 'create_quiz' %}" class="d-block p-3">Create Quiz</a>
+		<a href="{% url 'user_bookmarks' user.username %}" class="d-block p-3">Bookmarks</a>
+	{% else %}
+		<a href="" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Create Quiz</a>
+		<a href="#" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Bookmarks</a>
+	{% endif %}
+	<a href="#" class="d-block p-3">Categories</a>
+	<a href="#" class="d-block p-3">Notifications</a>
+	<a href="#" class="d-block p-3">Recently played</a>
+	<a href="#" class="d-block p-3">Recommended</a>
+{% endblock menu_content %}
+
+{% block maincontent %}
+	<main id="main-section" class="sequentially">
+		{% for question in quiz.questions.all %}
+			<article class="question bg-white p-3 mx-auto rounded-3 shadow-sm d-none">
+				<h5></h5>
+				<p>{{ question.content }}</p>
+				{% for option in question.options.all %}
+					{% if option == question.correct_option %}
+						<div class="option correct-option">
+							{{ option.content }}
+							<button class="border-0 fw-bold correct d-none material-icons-round">done</button>
+							<button class="border-0 fw-bold wrong d-none material-icons-round">close</button>
+						</div>
+					{% else %}
+						<div class="option">
+							{{ option.content }}
+							<button class="border-0 fw-bold correct d-none material-icons-round">done</button>
+							<button class="border-0 fw-bold wrong d-none material-icons-round">close</button>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</article>
+		{% endfor %}
+		<article class="bg-white px-3 pb-3 mx-auto rounded-3 shadow-sm" id="prep">
+			<h4 class="text-center lh-sm py-2 mb-0">{{ quiz.quiz_title }}</h4>
+			<hr class="m-0">
+			<p class="mx-auto text-center mb-1">{{ quiz.description }}</p>
+			<h5>No of Questions: <small id="no-of-questions">{{ quiz.questions.count }}</small></h5>
+			<h5>Timer: <small>None</small></h5>
+			<div class='dropdown d-flex align-items-end' id="mode-dropdown">
+				<h5>Mode of answering:</h5>
+				<button type="button" id="option-display" class='dropdown-toggle deep-btn ml-2' data-toggle="dropdown" aria-expanded="false">Sequentially</button>
+				<div class='dropdown-menu' id='bottom-dropdown'>
+					<button type="button" id="sequentially-btn">Sequentially</button>
+					<button type="button" id="all-at-once-btn">All at Once</button>
+				</div>
+			</div>
+			<button type="button" id="start-quiz-btn" class="transparent-btn mt-3 mx-auto" data-ui-type="sequentially">Start</button>
+		</article>
+		<div class="d-none" id="questions-nav-btn-container">
+			<button class="deep-btn mr-1" id="prev-question" disabled>Previous</button>
+			<button class="deep-btn ml-1" id="next-question">Next</button>
+		</div>
+	</main>
+	<div class="alert alert-dismissible fade" id="actionAlert" role="alert">
+		<span></span>
+		<button class="material-icons-round">close</button>
+	</div>
+	<div class="bg-white d-flex justify-content-between p-1" id='result-btn-container'>
+		{% if user.is_authenticated and user.has_activated_account %}
+			<div class="d-inline-flex align-items-center">
+				{% csrf_token %}
+				{% if quiz in user.liked_posts.all %}
+					<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='material-icons like-quiz-btn liked-quiz' id="like-btn">thumb_up_alt</button>
+				{% else %}
+					<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='like-quiz-btn material-icons' id="like-btn">thumb_up_alt</button>
+				{% endif %}
+				<span class="like-count mr-3">{{ quiz.likes.count }}</span>
+				{% if quiz in user.disliked_posts.all %}
+					<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn disliked-quiz material-icons' id="dislike-btn">thumb_down_alt</button>
+				{% else %}
+					<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn material-icons' id="dislike-btn">thumb_down_alt</button>	
+				{% endif %}
+				<span class="dislike-count">{{ quiz.dislikes.count }}</span>
+			</div>
+		{% endif %}
+		<div class="d-inline-flex">
+			<div id="no-of-questions-dropup" class="mr-2">
+				<button type="button" id="dropup-btn" class="d-lg-none material-icons" aria-expanded="false">apps</button>
+			</div>
+			<button type="button" class="deep-btn mr-2" id="result-trigger" disabled>Submit</button>
+		</div>
+	</div>
+	<section class="mr-3 bg-white pb-3 rounded-2 shadow-sm" id="no-of-questions-container">
+		<h5 class='w-100 border-bottom py-1'>No of questions: {{ quiz.questions.count }}</h5>
+		<!-- <button class="questions-no"></button>-->
+	</section>
+
+	<button type="button" class="d-none" data-toggle="modal" data-target="#resultAlert" id="modal-trigger"></button>
+	<div class="modal fade" id="resultAlert" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog" id="alert">
+			<div class="modal-content" id="result-alert">
+				<div class="modal-header">
+					<h5 class="m-0" id='result-container'>Result: <span class="fw-semibold"></span></h5>
+					<button type="button" class="material-icons-round" data-dismiss="modal" data-target="#resultAlert">close</button>
+				</div>
+				<div class="modal-body">
+					<a href="{% url 'home' %}" class='deep-btn d-block modal-btn'>Home</a>
+					<button type="button" class='transparent-btn d-block modal-btn' id='alert-play-again-btn' data-dismiss="modal" data-target="#resultAlert">Play again</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="unanswered-questions" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog" id="alert">
+			<div class="modal-content" id="prompt">
+				<div class="modal-header">
+					<h5 class="m-0" id='result-container'>Unanswered Question(s)</h5>
+					<button type="button" id='unansweredModalCloseBtn' class="material-icons-round" data-dismiss="modal" data-target="#unanswered-questions">close</button>
+				</div>
+				<div class="modal-body">
+					Are You sure You want to display the result?. One or more questions have not been answered.
+					<button type="button" class='transparent-btn d-block mx-auto' data-toggle="modal" data-target="#resultAlert" id="promptbtn">Show anyways</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock maincontent %}

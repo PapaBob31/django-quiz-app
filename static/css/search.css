@@ -1,0 +1,45 @@
+#main-section {
+  margin-top: 3.7rem;
+  width: 100%;
+}
+
+#actionAlert {
+  position: fixed;
+  bottom: 0;
+  margin-left: 10%;
+  width: 80%;
+}
+
+@media screen and (min-width: 992px) {
+  #main-section {
+    padding-left: calc(174px + 1rem);
+  }
+
+  #main-section > * {
+    width: 75%;
+    min-width: 750px;
+  }
+
+  #menu {
+    width: 15%;
+    min-width: 190px;
+    position: fixed;
+    top: 3.2rem;
+    left: 0;
+  }
+}
+
+@media screen and (min-width: 1270px) {
+  #main-section {
+    padding-left: 15%;
+  }
+}
+
+.quiz-link {
+  color: black;
+}
+
+.quiz-link:hover {
+  color: black;
+  text-decoration: underline;
+}

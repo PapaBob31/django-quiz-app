@@ -1,0 +1,28 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Unactivated account</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/unactivated.css' %}">
+</head>
+<body>
+  <h2 id="site-name">Quiz4U</h2>
+  <main>
+    <img src="{% static 'images/undraw_access_denied_re_awnf.svg' %}" alt="unactivated account image">
+    <div>
+		  {% if just_created_account %}
+				<h2>User account was created successfully<h2>
+				<p>But your account is not activated yet.</p>
+			{% else %}
+				<h2>Your account is not activated yet</h2>
+			{% endif %}
+			<p>To use the full features of this site, you must first activate your account.</p>
+			<p>Pls check your email for the activation link that was sent to you.</p>
+      <a href="{% url 'home' %}">Home</a>
+    </div>
+  </main>
+</body>
+</html>

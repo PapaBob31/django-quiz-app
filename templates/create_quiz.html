@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/write_quiz.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/animations.css' %}">
+	<script type="text/javascript" src="{% static 'javascript/create.js' %}" defer></script>
+	<title>create quiz</title>
+{% endblock head_tags %}
+
+{% block menu_content %}
+	<a href="{% url 'home' %}" class="d-block p-3">Home</a>
+	{% if user.has_activated_account %}
+		<a href="{% url 'create_quiz' %}" class="d-block p-3" id="current-page">Create Quiz</a>
+		<a href="{% url 'user_bookmarks' user.username %}" class="d-block p-3">Bookmarks</a>
+	{% else %}
+		<a href="" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Create Quiz</a>
+		<a href="#" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Bookmarks</a>
+	{% endif %}
+	<a href="#" class="d-block p-3">Categories</a>
+	<a href="#" class="d-block p-3">Notifications</a>
+	<a href="#" class="d-block p-3">Recently played</a>
+	<a href="#" class="d-block p-3">Recommended</a>
+{% endblock menu_content %}
+			
+{% block maincontent %}
+	<section id="main-section">
+		<main class="bg-white p-3 mx-lg-auto rounded-1 shadow-sm">
+			<form action="{% url 'create_quiz' %}" id='meta-form'>
+				{% csrf_token %}
+				<label>Title: </label>
+				<input type="text" id="title" class="w-100 all-inputs mb-2 mt-1">
+				<label>Description: </label>
+				<textarea maxlength="250" id="description" class="w-100 all-inputs mb-2 mt-1" rows="3"></textarea>
+			</form>
+			<section id='questions-container'></section>
+			<div class="d-flex align-items-end mb-2">
+				<label class="d-inline-block me-2">Add multiple questions:</label>
+				<input id="total-no-input" class="all-inputs p-1 ml-2" type="number" min="3" max="30">
+			</div>
+			<button type="button" id='create-questions-btn' class="deep-btn">Add question(s)</button>
+			<button type="button" id="add-question-btn" class="deep-btn">Add single question</button>
+		</main>
+	</section>
+	<div class="bg-white d-flex justify-content-end p-1" id='request-btns-container'>
+		<div id="no-of-questions-dropup" class="mr-2">
+			<button type="button" id="dropup-btn" class="d-lg-none material-icons" aria-expanded="false">apps</button>
+		</div>
+		<button type="button" id="post-quiz" class="deep-btn mr-2">Post Quiz</button>
+		<button type="button" id="save-as-draft" class="mr-2">Save as draft</button>
+	</div>
+	<section class="mr-3 bg-white pb-3 rounded-3 shadow-sm" id="no-of-questions-container">
+		<h5 class='w-100 border-bottom py-1'>No of questions created: <small>0</small></h5>
+		<span>No question created yet</span>
+		<!-- <button class="questions-no">1</button> -->
+	</section>
+	<button type="button" class="d-none btn" data-toggle="modal" data-target="#popupError" id="error-trigger"></button>
+	<div class="modal fade" id="popupError" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="m-0">Error</h5>
+					<button type="button" class="btn-close material-icons-round"  data-dismiss="modal">close</button>
+				</div>
+				<div class="modal-body">
+				</div>
+			</div>
+		</div>
+	</div>
+	<button type="button" class="d-none btn" data-toggle="modal" data-target="#loader" id="loader-trigger"></button>
+	
+	<div class="modal fade" id="loader" tabindex="-1" aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content px-5 pt-5">
+				<button type="button" class="p-2 material-icons-round" data-dismiss="modal" data-target="#loader" id="close-loader">close</button>
+				<div class="circle-loader">
+					<div class="checkmark draw"></div>
+					<button class="material-icons-round">close</button>
+				</div>
+				<h5 class="text-center my-3" id='animation-msg'>Creating Quiz...</h5>
+			</div>
+		</div>
+	</div>
+	<div id='templates' class='d-none'>
+		<form>
+			<button type="button" class="material-icons-round remove-form-btn">close</button>
+			<label class="fw-semibold"></label>
+			<textarea maxlength="200" rows="3"></textarea>
+			<div>
+				<button type="button" class='mark material-icons-round'>done</button>
+				<input type="text">
+			</div>
+			<div>
+				<button type="button" class='mark material-icons-round'>done</button>
+				<input type="text">
+			</div>
+			<div>
+				<button type="button" class='mark material-icons-round'>done</button>
+				<input type="text">
+				<button type="button" class='remove-input material-icons-round'>close</button>
+			</div>
+			<div>
+				<button type="button" class='mark material-icons-round'>done</button>
+				<input type="text">
+				<button type="button" class='remove-input material-icons-round'>close</button>
+			</div>
+			<button type="button" class="add-option-btn deep-btn">Add option</button>
+			<p></p>
+		</form>
+		<div>
+			<button type="button" class='mark material-icons-round'>done</button>
+			<input type="text">
+			<button type="button"  class='remove-input material-icons-round'>close</button>
+		</div>
+	</div>
+{% endblock maincontent %}

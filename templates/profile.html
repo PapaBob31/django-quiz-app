@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+	<script type="text/javascript" src="{% static 'javascript/profile.js' %}" defer></script>
+	<title>Profile</title>
+{% endblock head_tags %}
+
+{% block menu_content %}
+	<a href="{% url 'home' %}" class="d-block p-3">Home</a>
+	{% if user.has_activated_account %}
+		<a href="{% url 'create_quiz' %}" class="d-block p-3">Create Quiz</a>
+		<a href="{% url 'user_bookmarks' user.username %}" class="d-block p-3">Bookmarks</a>
+	{% else %}
+		<a href="" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Create Quiz</a>
+		<a href="#" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Bookmarks</a>
+	{% endif %}
+	<a href="#" class="d-block p-3">Categories</a>
+	<a href="#" class="d-block p-3">Notifications</a>
+	<a href="#" class="d-block p-3">Recently played</a>
+	<a href="#" class="d-block p-3">Recommended</a>
+{% endblock menu_content %}
+
+{% block maincontent %}
+	<main id="main-section">
+		<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2 mt-3">
+			<h4>{{ profile_owner.username }} &middot; <small class="fs-5 fw-normal">account</small></h4>
+			{% if user_owns_profile %}
+				<h5 class="mb-1">Email</h5>
+				<p>
+					{{ profile_owner.email }} 
+					<button id="edit-email" data-toggle='modal' data-target='#emailFormPopup' class='material-icons'>edit</button>
+				</p>
+				<h5 class="mb-1">Username</h5>
+				<p>
+					{{ profile_owner.username }} 
+					<button id="edit-username" data-toggle='modal' data-target='#usernameFormPopup' class='material-icons'>edit</button>
+				</p>
+			{% endif %} 
+		</article>
+		<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2" id="quiz-container">
+			{% csrf_token %}
+			<h4 class="mb-0">Quizzes</h4>
+			<hr class="mt-1 mb-2">
+			{% for quiz in profile_owner.quizzes.all %}
+				{% if not quiz.is_a_draft %}
+					<div>
+						<h5 class='d-inline-block'><a href="{% url 'quiz' quiz.slug_id %}" class="quiz-link">{{ quiz.quiz_title }}</a></h5>
+						{% if user_owns_profile %}
+							<a href="{% url 'edit_quiz' quiz.slug_id %}" class='material-icons'>edit</a> 
+							<button data-href="{% url 'delete_quiz' quiz.slug_id %}" id='{{quiz.id}}' class="delete-quiz material-icons" data-toggle='modal' data-target='#deleteQuizPrompt'>
+								delete_forever
+							</button>
+							<!-- <span class="spinner-grow"></span>
+							<span class="spinner-border"></span> -->
+						{% endif %}
+						<div class='deleting-quiz-loader'>
+							<span class='spinner-border'></span> deleting quiz...
+						</div>
+						<p>
+							{{ quiz.description }} 
+						</p>
+						<div class="d-inline-flex align-items-center">
+							{% if quiz in user.liked_posts.all %}
+								<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='material-icons like-quiz-btn liked-quiz'>thumb_up_alt</button>
+							{% else %}
+								<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='like-quiz-btn material-icons'>thumb_up_alt</button>
+							{% endif %}
+							<span class="like-count mr-3">{{ quiz.likes.count }}</span>
+							{% if quiz in user.disliked_posts.all %}
+								<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn disliked-quiz material-icons'>thumb_down_alt</button>
+							{% else %}
+								<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn material-icons'>thumb_down_alt</button>	
+							{% endif %}
+							<span class="dislike-count">{{ quiz.dislikes.count }}</span>
+						</div>
+						<div class='deleting-cover'></div>
+					</div>
+				{% endif %}
+			{% empty %}
+				<h5>There is nothing here yet</h5>
+			{% endfor %}
+		</article>
+		{% if user_owns_profile %}
+			<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2">
+				<h4 class="mb-0">Bookmarks</h4>
+				<hr class="mt-1 mb-2">
+				{% for bookmark in profile_owner.bookmarks.all %}
+					<h5><a href="{% url 'quiz' bookmark.slug_id %}" class="quiz-link">{{bookmark.quiz_title}}</a></h5>
+					<p>{{ bookmark.description }}.</p>
+				{% empty %}
+					<h5>There is nothing here yet</h5>
+				{% endfor %}
+				<a href="{% url 'user_bookmarks' profile_owner.username %}" class="more-link">See all</a>
+			</article>
+			<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3">
+				<h4 class="mb-0">Drafts</h4>
+				<hr class="mt-1 mb-2">
+				{% for quiz in profile_owner.drafts.all %}
+					<h5><a href="{% url 'edit_quiz' quiz.slug_id %}" class="quiz-link">{{ quiz.quiz_title }} </a></h5>
+				{% empty %}
+					<h5>No drafts here yet</h5>
+				{% endfor %}
+			</article>
+		{% endif %}
+	</main>
+	<div class="alert alert-dismissible fade" id="actionAlert" role="alert">
+		<span></span>
+		<button class="material-icons-round">close</button>
+	</div>
+	<div class="modal fade" id="usernameFormPopup" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Update Username</h5>
+					<button class="btn-close material-icons-round" data-dismiss="modal">close</button>
+				</div>
+				<div class="modal-body">
+					<form id="username-form" method="POST" class="mb-2">
+						<div class="mb-1"><span class="fw-bold">Current username:</span> {{ user.username }}</div>
+						<label class="fw-bold">New username:</label>
+						<input type="text" name="username rounded-1">
+						<button type="button" class="deep-btn">update</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="emailFormPopup" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Update Email</h5>
+					<button class="btn-close material-icons-round" data-dismiss="modal">close</button>
+				</div>
+				<div class="modal-body">
+					<form id="email-form" method="POST" class="mb-2">
+						<div class="mb-1"><span class="fw-bold">Current Email:</span> {{ user.email }}</div>
+						<label class="fw-bold">New Email:</label>
+						<input type="text" name="email rounded-1">
+						<button type="button" class="deep-btn">update</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="deleteQuizPrompt" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Delete</h5>
+					<button class="btn-close material-icons-round" data-dismiss="modal">close</button>
+				</div>
+				<div class="modal-body">
+					<p class='text-center'>Are you sure you want to delete this quiz?</p>
+					<button type="button" class="deep-btn d-block mx-auto" data-targetId='' id='delete' data-dismiss="modal">delete</button>
+					<input type="checkbox"> <span>Don't ask again</span>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock maincontent %}

@@ -1,0 +1,205 @@
+body {
+  font-family: 'Noto Sans', 'Segoe UI', sans-serif;
+  background-color: rgb(240, 240, 240);
+}
+
+a {
+  text-decoration: none;
+}
+
+header {
+  width: 100%;
+  height: 3.2rem;
+  z-index: 1035;
+}
+
+.material-icons-outlined, .material-icons-round, .material-icons{
+  background-color: transparent;
+  border: none;
+}
+
+#search-form {
+  outline: rgba(0, 0, 0, 0.1) solid 1px;
+  background-color: rgb(250, 250, 250);
+  width: 41%;
+}
+
+#search-form:focus-within {
+  outline: rgb(123, 104, 238, 0.6) solid 2px;
+}
+
+#search-btn {
+  background-color: inherit;
+  color: rgb(123, 104, 238);
+  height: 1.8rem;
+  border: none;
+}
+
+#search-input {
+  background-color: inherit;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  height: 1.8rem;
+}
+
+.transparent-btn {
+  color: rgb(123, 104, 238);
+  background-color: rgba(123, 104, 238, 0.2);
+  border: 1px solid rgb(123, 104, 238);
+  border-radius: 5px;
+  padding: 0.35rem 0.75rem;
+}
+
+.deep-btn {
+  color: white;
+  background-color: rgb(123, 104, 238);
+  border: none;
+  border-radius: 5px;
+  padding: 0.35rem 0.75rem;
+}
+
+.deep-btn:hover {
+  color: white;
+}
+
+.deep-btn:disabled {
+  background-color: rgba(143, 114, 250, 0.6);
+}
+
+@media screen and (max-width: 400px) {
+  .transparent-btn, .deep-btn {
+    padding: 4px 6px;
+  }
+}
+
+#username {
+  color: black;
+  font-size: 1.8rem;
+  display: block;
+  line-height: 1.3;
+}
+
+#username:hover {
+  text-decoration: underline;
+}
+
+#menu a {
+  color: black;
+}
+
+#menu a:hover {
+  text-decoration: underline;
+}
+
+#menu #current-page {
+  color: white;
+  background-color: rgb(123, 104, 238);
+  border: none;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 992px) {
+  #search-form {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    transform: scaleX(0);
+  }
+
+  #search-form.show {
+    transform: scaleX(1);
+    transform-origin: 0 0;
+    transition: transform 0.3s;
+  }
+
+  #search-form #close-form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 3px;
+  }
+
+  #search-form:focus-within {
+    outline: 0;
+  }
+
+  #menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 400px;
+    bottom: 0;
+    z-index: 1045;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    transform: translateX(-100%);
+  }
+
+  #menu.offscreen {
+    animation-name: hideMenu;
+    animation-duration: 0.4s;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes hideMenu {
+    from {
+      transform: none;
+    }
+
+    to {    
+      transform: translateX(-100%);
+      visibility: hidden
+    }
+  }
+
+  #menu.show {
+    animation-name: showMenu;
+    animation-duration: 0.4s;
+    animation-timing-function: ease-in-out;
+    visibility: visible;
+    transform: none;
+  }
+
+  @keyframes showMenu {
+    from {
+      transform: translateX(-100%)
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  #menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    visibility: hidden;
+    background-color: #000;
+    opacity: 0;
+  }
+
+  #menu-backdrop.show {
+    visibility: visible;
+    opacity: 0.5;
+  }
+}
+
+.rounded-3 {
+  border-radius: 8px;
+}
+
+.rounded-2 {
+  border-radius: 5px;
+}
+
+.rounded-1 {
+  border-radius: 3px;
+}

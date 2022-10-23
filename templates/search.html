@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}">
+	<title>Profile</title>
+{% endblock head_tags %}
+
+{% block menu_content %}
+	<a href="{% url 'home' %}" class="d-block p-3">Home</a>
+	{% if user.has_activated_account %}
+		<a href="{% url 'create_quiz' %}" class="d-block p-3">Create Quiz</a>
+		<a href="{% url 'user_bookmarks' user.username %}" class="d-block p-3">Bookmarks</a>
+	{% else %}
+		<a href="" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Create Quiz</a>
+		<a href="#" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Bookmarks</a>
+	{% endif %}
+	<a href="#" class="d-block p-3">Categories</a>
+	<a href="#" class="d-block p-3">Notifications</a>
+	<a href="#" class="d-block p-3">Recently played</a>
+	<a href="#" class="d-block p-3">Recommended</a>
+{% endblock menu_content %}
+
+{% block maincontent %}
+	<main id="main-section">
+		<article class="bg-white p-3 rounded-1 shadow-sm mx-2 ml-lg-3 mb-2 mt-3">
+			{% if search_results %}
+				{% for result in search_results %}
+					{% if not result.is_a_draft %}
+						<h5><a href="{% url 'quiz' result.slug_id %}" class="quiz-link">{{ result.quiz_title }}</a></h5>
+						<hr class="mt-1 mb-2">
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				<h5>We could not find any quiz based on your query</h5>
+			{% endif %}
+		</article>
+	</main>
+{% endblock maincontent %}

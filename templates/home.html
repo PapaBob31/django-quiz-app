@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+	<meta name="description" content="Play different types of fun quizzes at QUiz4U.">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% if user.is_authenticated and user.has_activated_account %}
+		<script type="text/javascript" src="{% static 'javascript/home.js' %}" defer></script>
+	{% endif %}
+	<title>Home</title>
+{% endblock head_tags %}
+ 
+{% block menu_content %}
+	<a href="{% url 'home' %}" class="d-block p-3" id="current-page">Home</a>
+	{% if user.has_activated_account %}
+		<a href="{% url 'create_quiz' %}" class="d-block p-3">Create Quiz</a>
+		<a href="{% url 'user_bookmarks' user.username %}" class="d-block p-3">Bookmarks</a>
+	{% else %}
+		<a href="" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Create Quiz</a>
+		<a href="#" class="d-block p-3" data-toggle="modal" data-target="#popupMessage">Bookmarks</a>
+	{% endif %}
+	<a href="#" class="d-block p-3">Categories</a>
+	<a href="#" class="d-block p-3">Notifications</a>
+	<a href="#" class="d-block p-3">Recently played</a>
+	<a href="#" class="d-block p-3">Recommended</a>
+{% endblock menu_content %}
+
+{% block maincontent %}
+	<main id="main-section">
+		{% for quiz in quiz_list %}
+			{% if not quiz.is_a_draft %}
+				<article class="bg-white p-3 rounded-2 shadow-sm mx-auto quiz">
+					<a href="{% url 'userprofile' quiz.author.username %}" class="profile-link">{{ quiz.author.username }}</a>
+					<h5><a href="{% url 'quiz' quiz.slug_id %}" class="text-decoration-none text-dark">{{ quiz.quiz_title }}</a></h5>
+					<p class="lh-lg">{{ quiz.description }}</p>
+					{% if user.has_activated_account %}
+						{% csrf_token %}
+						{% if quiz in user.bookmarks.all %}
+							<button data-href="{% url 'bookmark_quiz' quiz.slug_id %}" class="bookmark-quiz-btn bookmarked-quiz material-icons-outlined">bookmark</button>
+						{% else %}
+							<button data-href="{% url 'bookmark_quiz' quiz.slug_id %}" class="bookmark-quiz-btn material-icons-outlined">bookmark_border</button>
+						{% endif %}
+						<div class="d-inline-flex align-items-center">
+							{% if quiz in user.liked_posts.all %}
+								<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='material-icons like-quiz-btn liked-quiz'>thumb_up_alt</button>
+							{% else %}
+								<button data-href="{% url 'like_quiz' quiz.slug_id %}" class='like-quiz-btn material-icons'>thumb_up_alt</button>
+							{% endif %}
+							<span class="like-count mr-3">{{ quiz.likes.count }}</span>
+							{% if quiz in user.disliked_posts.all %}
+								<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn disliked-quiz material-icons'>thumb_down_alt</button>
+							{% else %}
+								<button data-href="{% url 'dislike_quiz' quiz.slug_id %}" class='dislike-quiz-btn material-icons'>thumb_down_alt</button>
+							{% endif %}
+							<span class="dislike-count">{{ quiz.dislikes.count }}</span>
+						</div>
+					{% else %}
+						<button class="bookmark-quiz-btn material-icons-outlined" data-toggle="modal" data-target="#popupMessage">bookmark_border</button>
+						<div class="d-inline-flex align-items-center mr-3">
+							<button class='like-quiz-btn material-icons' data-toggle="modal" data-target="#popupMessage">thumb_up_alt</button>
+							<span class="like-count">{{ quiz.likes.count }}<span>
+						</div>
+						<div class="d-inline-flex align-items-center mr-3">
+							<button class='dislike-quiz-btn material-icons'  data-toggle="modal" data-target="#popupMessage">thumb_down_alt</button>
+							<span class="dislike-count">{{ quiz.dislikes.count }}<span>
+						</div>
+					{% endif %}
+				</article>
+			{% endif %}
+		{% empty %}
+			<h5>There are no available quizzes created yet. Be the first to <a href="{% url 'create_quiz' %}">Create one.</a></h5>
+		{% endfor %}
+	</main>
+	<section class="d-none d-lg-block w-25 mr-3" id="third-section">
+		<section class="mb-3 shadow-sm rounded-3 bg-white p-3">
+			<h5>recommended quizzes</h5>
+			<h6>Strange strange world</h6>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempo...
+			</p>
+			<h6>I smell a rat.</h6>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempo...
+			</p>
+			<a href="#" class="more-link">more..</a>
+		</section>
+		<section class="mb-3 shadow-sm rounded-3 bg-white p-3">
+			<h5 class="">Recently played</h5>
+			<h6>Strange strange world</h6>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusm...
+			</p>
+			<h6>I smell a rat.</h6>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod...
+			</p>
+			<a href="#" class="more-link">more..</a>
+		</section>
+	</section>
+	<div class="alert alert-danger p-2 alert-dismissible fade" id="post-error" role="alert">
+		Something went wrong! Please try again later.
+		<button type="button" class="p-1 material-icons-round" aria-label="Close">close</button>
+	</div>
+{% endblock maincontent %}

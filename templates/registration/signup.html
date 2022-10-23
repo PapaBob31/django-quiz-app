@@ -1,0 +1,36 @@
+{% extends 'registration/registration_base.html' %}
+{% load static %}
+
+{% block head_tags %}
+	<script type="text/javascript" src="{% static 'javascript/signup.js' %}" defer></script>
+	<title>Signup</title>
+{% endblock head_tags %}
+
+{% block links %}
+	<a href="{% url 'login' %}" class="d-inline-block transparent-btn mr-2 mr-md-5">Login</a>
+	<a href="{% url 'home' %}" class="text-decoration-none fs-5 fw-semibold ms-3">Home</a>
+{% endblock links %}
+
+{% block form %}
+	<form id="signup-form" class="bg-white mt-4" method='POST' action="{% url 'signup' %}">
+		<h4 class="m-0 mb-1 text-center">Sign up</h4>
+		{{ password_error }}
+		{% csrf_token %}	
+		{% for field in form %}
+			{{ field.label_tag }}
+			{{ field }}
+			{% for error in field.errors %}
+				<div class="alert alert-danger show fade mt-2 mb-1 p-1 lh-sm" id="{{field.help_text}}-error">
+					<span>{{ error }}</span>
+					<button type="button" class="btn-close p-1 material-icons-round">close</button>
+				</div>
+			{% empty %}
+				<div class="d-none alert alert-danger show fade mt-2 mb-1 p-1 lh-sm" id="{{field.help_text}}-error">
+					<span></span>
+					<button type="button" class="btn-close p-1 material-icons-round">close</button>
+				</div>
+			{% endfor %}
+		{% endfor %}
+		<button type="submit" class="deep-btn mx-auto d-block" id="submit-btn">Submit</button>
+	</form>
+{% endblock form %}

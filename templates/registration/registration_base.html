@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/registration.css' %}">
+	{% block head_tags %}
+	{% endblock head_tags %}
+</head>
+<body>
+	<header class="bg-white d-flex align-items-end justify-content-between py-1 px-2 shadow-sm">
+		<h4 class="m-0">Quiz4U</h4>
+		<div class="d-flex align-items-center">
+			{% block links %}
+			{% endblock links %}
+		</div>
+	</header>
+	{% block form %}
+	{% endblock form %}
+</body>
+</html>
